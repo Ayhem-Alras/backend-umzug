@@ -5,7 +5,7 @@ const cors = require("cors");
 const nodemailer = require("nodemailer");
 
 const app = express();
-const PORT = 5000;
+const PORT = process.env.PORT || 5000;  // ✅ تعريف PORT بشكل صحيح
 
 // Middleware
 app.use(cors()); // Erlaubt Anfragen von anderen Domains (z. B. von Ihrem Frontend)
@@ -42,11 +42,8 @@ app.post("/send", async (req, res) => {
       res.status(500).json({ error: "Fehler beim Senden der Nachricht." });
     }
   });
-  
 
 // Server starten
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server läuft auf http://localhost:${PORT}`);
 });
-
