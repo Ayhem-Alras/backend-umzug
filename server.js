@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 
 // السماح بالطلبات فقط من نطاقات محددة
 const allowedOrigins = [
-  "https://frontend-umzug-45l4j24bv-ayhem-alras-projects.vercel.app/", // النطاق المسموح به
+  "https://frontend-umzug-45l4j24bv-ayhem-alras-projects.vercel.app", // النطاق المسموح به
 ];
 
 app.use(cors({
