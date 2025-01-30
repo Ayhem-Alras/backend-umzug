@@ -8,14 +8,11 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // السماح بالطلبات فقط من نطاقات محددة
-const allowedOrigins = [
-  "https://frontend-umzug-45l4j24bv-ayhem-alras-projects.vercel.app",
-  "https://frontend-umzug-9p7yrhiae-ayhem-alras-projects.vercel.app",
-];
+const allowedOrigins = [/^https:\/\/frontend-umzug-[a-z0-9]+-ayhem-alras-projects\.vercel\.app$/];
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || allowedOrigins.some(pattern => pattern.test(origin))) {
       callback(null, true);
     } else {
       callback(new Error(`❌ CORS Blocked: ${origin} ليس في قائمة المسموح بها`));
@@ -24,6 +21,7 @@ app.use(cors({
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 }));
+
 
 
 
