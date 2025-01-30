@@ -9,12 +9,12 @@ const PORT = process.env.PORT || 5000;
 
 // السماح بالطلبات فقط من نطاقات محددة
 const allowedOrigins = [
-  "https://frontend-umzug-45l4j24bv-ayhem-alras-projects.vercel.app", // النطاق المسموح به
+  "https://frontend-umzug-45l4j24bv-ayhem-alras-projects.vercel.app",
+  "https://frontend-umzug-9p7yrhiae-ayhem-alras-projects.vercel.app",
 ];
 
 app.use(cors({
   origin: (origin, callback) => {
-    console.log("🚀 طلب CORS من:", origin); // سجل النطاق القادم
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -24,6 +24,8 @@ app.use(cors({
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 }));
+
+
 
 
 // Middleware
