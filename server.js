@@ -8,11 +8,14 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Erlaubte Ursprünge für Anfragen (CORS)
-const allowedOrigins = [/^https:\/\/frontend-umzug-[a-z0-9]+-ayhem-alras-projects\.vercel\.app$/];
+const allowedOrigins = [
+  "https://frontend-umzug.vercel.app", // أضف هذا النطاق الجديد
+  /^https:\/\/frontend-umzug-[a-z0-9]+-ayhem-alras-projects\.vercel\.app$/ // الأنماط السابقة
+];
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || allowedOrigins.some(pattern => pattern.test(origin))) {
+    if (!origin || allowedOrigins.some(pattern => (typeof pattern === "string" ? pattern === origin : pattern.test(origin)))) {
       callback(null, true);
     } else {
       callback(new Error(`❌ CORS blockiert: ${origin} ist nicht in der Liste der erlaubten Ursprünge`));
@@ -21,6 +24,7 @@ app.use(cors({
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 }));
+
 
 // Middleware
 app.use(bodyParser.json());
