@@ -1,4 +1,4 @@
-require("dotenv").config(); // تحميل متغيرات البيئة
+require("dotenv").config(); // Laden der Umgebungsvariablen
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
@@ -7,7 +7,7 @@ const nodemailer = require("nodemailer");
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// السماح بالطلبات فقط من نطاقات محددة
+// Erlaubte Ursprünge für Anfragen (CORS)
 const allowedOrigins = [/^https:\/\/frontend-umzug-[a-z0-9]+-ayhem-alras-projects\.vercel\.app$/];
 
 app.use(cors({
@@ -15,62 +15,58 @@ app.use(cors({
     if (!origin || allowedOrigins.some(pattern => pattern.test(origin))) {
       callback(null, true);
     } else {
-      callback(new Error(`❌ CORS Blocked: ${origin} ليس في قائمة المسموح بها`));
+      callback(new Error(`❌ CORS blockiert: ${origin} ist nicht in der Liste der erlaubten Ursprünge`));
     }
   },
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 }));
 
-
-
-
-
 // Middleware
 app.use(bodyParser.json());
 
-// المسار الرئيسي للتحقق من عمل السيرفر
+// Haupt-Route zur Server-Überprüfung
 app.get("/", (req, res) => {
-  res.status(200).send("🚀 الخادم يعمل بنجاح.");
+  res.status(200).send("🚀 Server läuft erfolgreich.");
 });
 
-// مسار إرسال البريد الإلكتروني
+// Route zum Senden von E-Mails
 app.post("/send", async (req, res) => {
   const { name, email, phone, message } = req.body;
 
-  // التحقق من صحة البيانات المدخلة
+  // Überprüfung der Eingabedaten
   if (!name || !email || !phone || !message) {
-    return res.status(400).json({ error: "الرجاء ملء جميع الحقول!" });
+    return res.status(400).json({ error: "Bitte füllen Sie alle Felder aus!" });
   }
 
   try {
-    // إعداد Nodemailer
+    // Konfiguration von Nodemailer
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: process.env.EMAIL, // البريد الإلكتروني
-        pass: process.env.PASSWORD, // كلمة المرور أو كلمة مرور التطبيق
+        user: process.env.EMAIL, // E-Mail-Adresse
+        pass: process.env.PASSWORD, // Passwort oder App-Passwort
       },
     });
 
-    // إعداد بيانات البريد الإلكتروني
+    // E-Mail-Details
     const mailOptions = {
-      from: `"نموذج التواصل" <${process.env.EMAIL}>`,
+      from: `"Kontaktformular" <${process.env.EMAIL}>`,
       to: process.env.RECEIVER_EMAIL,
-      subject: `رسالة جديدة من ${name}`,
-      text: `الاسم: ${name}\nالبريد الإلكتروني: ${email}\nالهاتف: ${phone}\n\nالرسالة:\n${message}`,
+      subject: `Neue Nachricht von ${name}`,
+      text: `Name: ${name}\nE-Mail: ${email}\nTelefon: ${phone}\n\nNachricht:\n${message}`,
     };
 
-    // إرسال البريد الإلكتروني
+    // E-Mail senden
     await transporter.sendMail(mailOptions);
-    res.status(200).json({ message: "تم إرسال الرسالة بنجاح!" });
+    res.status(200).json({ message: "Die Nachricht wurde erfolgreich gesendet!" });
   } catch (error) {
-    console.error("خطأ أثناء إرسال البريد الإلكتروني:", error);
-    res.status(500).json({ error: "حدث خطأ أثناء إرسال الرسالة. يرجى المحاولة مرة أخرى." });
+    console.error("Fehler beim Senden der E-Mail:", error);
+    res.status(500).json({ error: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut." });
   }
 });
 
-// تشغيل الخادم
+// Server starten
 app.listen(PORT, () => {
   console.log(`🚀 Server läuft auf Port ${PORT}`);
 });
