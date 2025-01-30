@@ -14,15 +14,17 @@ const allowedOrigins = [
 
 app.use(cors({
   origin: (origin, callback) => {
+    console.log("🚀 طلب CORS من:", origin); // سجل النطاق القادم
     if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true); // السماح بالطلب
+      callback(null, true);
     } else {
-      callback(new Error("طلب غير مسموح به بواسطة CORS")); // رفض الطلب
+      callback(new Error(`❌ CORS Blocked: ${origin} ليس في قائمة المسموح بها`));
     }
   },
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 }));
+
 
 // Middleware
 app.use(bodyParser.json());
